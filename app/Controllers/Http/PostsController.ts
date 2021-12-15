@@ -4,7 +4,10 @@ import PostValidator from "App/Validators/PostValidator";
 
 export default class PostsController {
   public async index({ view }: HttpContextContract) {
-    const posts = await Post.query().preload('user')
+    const posts = await Post.query()
+      .preload('user')
+      .where('isPublished', true)
+    
     return view.render('index', { posts })
   }
 
