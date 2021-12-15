@@ -11,15 +11,19 @@
       </div>
     @endif
 
-    <label>
-      Username or Email
-      <input type="text" name="uid" />
-    </label>
+    @!input({
+      label: 'Username or Email',
+      name: 'uid',
+      value: flashMessages.get('uid'),
+      errors: flashMessages.get('errors.uid')
+    })
 
-    <label>
-      Password
-      <input type="password" name="password" />
-    </label>
+    @!input({
+      type: 'password',
+      label: 'Password',
+      name: 'password',
+      errors: flashMessages.get('errors.password')
+    })
 
     <button type="submit">Login</button>
   </form>

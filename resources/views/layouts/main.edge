@@ -15,8 +15,8 @@
     @if (auth.user)
       <a href="{{ route('auth.logout') }}">Logout</a>
     @else
-      <a href="{{ auth.register.show }}">Register</a>
-      <a href="{{ auth.login.show }}">Login</a>
+      <a href="{{ route('auth.register.show') }}">Register</a>
+      <a href="{{ route('auth.login.show') }}">Login</a>
     @endif
   </div>
 

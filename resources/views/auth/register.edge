@@ -5,35 +5,27 @@
   <form action="{{ route('auth.register') }}" method="POST">
     {{ csrfField() }}
 
-    <label>
-      Username
-      <input type="text" name="username" value="{{ flashMessages.get('username') ?? '' }}" />
-      @if (flashMessages.has('errors.username'))
-        <small style="color: red;">
-          {{ flashMessages.get('errors.username') }}
-        </small>
-      @endif
-    </label>
+    @!input({
+      label: 'Username',
+      name: 'username',
+      value: flashMessages.get('username'),
+      errors: flashMessages.get('errors.username')
+    })
 
-    <label>
-      Email
-      <input type="email" name="email" value="{{ flashMessages.get('email') ?? '' }}" />
-      @if (flashMessages.has('errors.email'))
-        <small style="color: red;">
-          {{ flashMessages.get('errors.email') }}
-        </small>
-      @endif
-    </label>
+    @!input({
+      type: 'email',
+      label: 'Email',
+      name: 'email',
+      value: flashMessages.get('email'),
+      errors: flashMessages.get('errors.email')
+    })
 
-    <label>
-      Password
-      <input type="password" name="password" />
-      @if (flashMessages.has('errors.password'))
-        <small style="color: red;">
-          {{ flashMessages.get('errors.password') }}
-        </small>
-      @endif
-    </label>
+    @!input({
+      type: 'password',
+      label: 'Password',
+      name: 'password',
+      errors: flashMessages.get('errors.password')
+    })
 
     <button type="submit">Register</button>
   </form>
