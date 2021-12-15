@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdonisJS - A fully featured web framework for Node.js</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+  {{--  Navigation  --}}
+  <div class="flex items-center justify-center bg-gray-50 py-3 border-b border-gray-100 space-x-3">
+    <a href="{{ route('home') }}">Home</a>
+    <a href="{{ route('posts.create') }}">New Post</a>
+    @if (auth.user)
+      <a href="{{ route('auth.logout') }}">Logout</a>
+    @else
+      <a href="{{ auth.register.show }}">Register</a>
+      <a href="{{ auth.login.show }}">Login</a>
+    @endif
+  </div>
+
+  <main class="max-w-xl mx-auto mt-6">
+    @!section('content')
+  </main>
+</body>
+</html>

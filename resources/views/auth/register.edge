@@ -1,0 +1,42 @@
+@layout('layouts/main')
+
+@section('content')
+
+  <form action="{{ route('auth.register') }}" method="POST">
+    {{ csrfField() }}
+
+    <label>
+      Username
+      <input type="text" name="username" value="{{ flashMessages.get('username') ?? '' }}" />
+      @if (flashMessages.has('errors.username'))
+        <small style="color: red;">
+          {{ flashMessages.get('errors.username') }}
+        </small>
+      @endif
+    </label>
+
+    <label>
+      Email
+      <input type="email" name="email" value="{{ flashMessages.get('email') ?? '' }}" />
+      @if (flashMessages.has('errors.email'))
+        <small style="color: red;">
+          {{ flashMessages.get('errors.email') }}
+        </small>
+      @endif
+    </label>
+
+    <label>
+      Password
+      <input type="password" name="password" />
+      @if (flashMessages.has('errors.password'))
+        <small style="color: red;">
+          {{ flashMessages.get('errors.password') }}
+        </small>
+      @endif
+    </label>
+
+    <button type="submit">Register</button>
+  </form>
+
+
+@endsection

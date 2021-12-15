@@ -1,0 +1,45 @@
+@layout('layouts/main')
+
+@section('content')
+
+  {{-- Set action variable to update if post exists, otherwise create --}}
+  @set('action', post
+    ? route('posts.update', { id: post.id }, { qs: { _method: 'PUT' } })
+    : route('posts.store'))
+
+  <form action="{{ action }}" method="POST">
+    {{ csrfField() }}
+
+    @!input({
+      label: 'Title',
+      name: 'title',
+      value: flashMessages.get('title') ?? post?.title,
+      errors: flashMessages.get('errors.title')
+    })
+
+    @!input({
+      label: 'Summary',
+      type: 'textarea',
+      name: 'summary',
+      value: flashMessages.get('summary') ?? post?.summary,
+      errors: flashMessages.get('errors.summary')
+    })
+
+    @!input({
+      label: 'Body',
+      type: 'textarea',
+      name: 'body',
+      rows: 5,
+      value: flashMessages.get('body') ?? post?.body,
+      errors: flashMessages.get('errors.body')
+    })
+
+    <label class="block mb-6">
+      <input class="mr-2" type="checkbox" name="isPublished" {{ post && post.isPublished ? 'checked=checked' : '' }} />
+      Publish Post
+    </label>
+
+    <button type="submit">Save Post</button>
+  </form>
+
+@endsection

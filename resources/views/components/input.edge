@@ -1,0 +1,16 @@
+<div class="w-full mb-3">
+  <label class="w-full">
+    @if (label)
+      <div>{{ label }}</div>
+    @endif
+
+    @if (type === 'textarea')
+      <textarea name="{{ name }}" rows="{{ rows ?? 2 }}" class="w-full border border-gray-300 rounded">{{ value ?? '' }}</textarea>
+    @else
+      <input class="w-full border border-gray-300 rounded" type="{{ type ?? 'text' }}" name="{{ name }}" value="{{ value ?? '' }}" />
+    @endif
+  </label>
+  @if (errors)
+    <small class="text-red-500">{{ errors.join(', ') }}</small>
+  @endif
+</div>

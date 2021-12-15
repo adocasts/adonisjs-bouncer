@@ -1,0 +1,15 @@
+@layout('layouts/main')
+
+@section('content')
+
+  @each (post in posts)
+    <a href="{{ route('posts.show', { id: post.id }) }}" class="flex flex-col p-3 rounded bg-transparent hover:bg-gray-50 border border-transparent hover:border-gray-100 transition mb-3">
+      <h3 class="text-xl font-semibold">
+        {{ post.title }}
+      </h3>
+      <p class="text-sm mb-2">{{ excerpt(post.summary, 150) }}</p>
+      <p class="text-xs text-gray-400">By {{ post.user.username }}</p>
+    </a>
+  @endeach
+
+@endsection
