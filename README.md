@@ -1,20 +1,10 @@
-# AdonisJS Authentication in 15 Minutes
+# AdonisJS Bouncer Series Repo
 ______
 
-This repository showcases how far you can get with AdonisJS Authentication within 15 minutes when starting from scratch.
+This repository suppliments the AdonisJS Bouncer lesson series on jagr.co. It's a simplistic blog with users, posts, and comments. We'll utilize bouncer to perform authorization checks to ensure only permitted users can mutate posts and comments.
 
-### Features
+### Following Along?
+Clone the `01_starting_point` branch to follow along with the series.
 
-- User can login with username or email
-- User can register a new account
-- User can logout
-- Registration input is validated
-- User gets registration validation feedback
-- User gets vague login feedback if authentication attempt fails
-
-### Links
-
-- Lesson: https://jagr.co/lessons/adonisjs-authentication-in-15-minutes
-- YouTube: https://www.youtube.com/watch?v=AXAJGHQBNkg
-- Series: https://jagr.co/series/adonisjs-in-15
-- Newsletter: https://www.getrevue.co/profile/jagr_co/
+### Final Project
+You can find the final project on the main branch.
