@@ -27,5 +27,19 @@ Route.post('login', 'AuthController.login').as('auth.login')
 Route.get('logout', 'AuthController.logout').as('auth.logout')
 
 Route.get('', 'PostsController.index').as('home')
-Route.resource('posts', 'PostsController').except(['index'])
-Route.shallowResource('posts.comments', 'CommentsController').only(['store', 'update', 'destroy'])
+
+Route.resource('posts', 'PostsController')
+  .except(['index'])
+  .middleware({
+    create: ['auth'],
+    store: ['auth'],
+    edit: ['auth'],
+    update: ['auth'],
+    destroy: ['auth']
+  })
+
+Route.shallowResource('posts.comments', 'CommentsController')
+  .only(['store', 'update', 'destroy'])
+  .middleware({
+    '*': ['auth']
+  })
