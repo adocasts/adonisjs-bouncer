@@ -11,7 +11,11 @@
   {{--  Navigation  --}}
   <div class="flex items-center justify-center bg-gray-50 py-3 border-b border-gray-100 space-x-3">
     <a href="{{ route('home') }}">Home</a>
-    <a href="{{ route('posts.create') }}">New Post</a>
+
+    @can('createPost')
+      <a href="{{ route('posts.create') }}">New Post</a>
+    @endcan
+
     @if (auth.user)
       <a href="{{ route('auth.logout') }}">Logout</a>
     @else

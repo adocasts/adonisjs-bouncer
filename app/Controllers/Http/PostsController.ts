@@ -7,11 +7,13 @@ export default class PostsController {
     const posts = await Post.query()
       .preload('user')
       .where('isPublished', true)
-    
+
     return view.render('index', { posts })
   }
 
-  public async create({ view }: HttpContextContract) {
+  public async create({ view, bouncer }: HttpContextContract) {
+    await bouncer.authorize('createPost')
+
     return view.render('posts/createOrEdit')
   }
 
@@ -26,12 +28,14 @@ export default class PostsController {
     return response.redirect().toRoute('posts.show', { id: post.id })
   }
 
-  public async show({ view, params }: HttpContextContract) {
+  public async show({ view, params, bouncer }: HttpContextContract) {
     const post = await Post.query()
       .preload('comments', query => query.preload('user'))
       .preload('user')
       .where('id', params.id)
       .firstOrFail()
+
+    await bouncer.authorize('viewPost', post)
 
     return view.render('posts/show', { post })
   }

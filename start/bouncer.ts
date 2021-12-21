@@ -6,6 +6,10 @@
  */
 
 import Bouncer from '@ioc:Adonis/Addons/Bouncer'
+import User from "App/Models/User";
+import Role from "Contracts/enums/Role";
+import Post from "App/Models/Post";
+import Logger from "@ioc:Adonis/Core/Logger"
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +33,30 @@ import Bouncer from '@ioc:Adonis/Addons/Bouncer'
 | NOTE: Always export the "actions" const from this file
 |****************************************************************
 */
+
 export const { actions } = Bouncer
+  .before((user: User | null) => {
+    if (user?.roleId === Role.ADMIN) {
+      return true
+    }
+  })
+  .after((user: User | null, actionName, actionResult) => {
+    const userType = user ? 'User' : 'Guest'
+
+    actionResult.authorized
+      ? Logger.info(`${userType} was authorized to ${actionName}`)
+      : Logger.info(`${userType} was denied to ${actionName} for ${actionResult.errorResponse}`)
+  })
+  .define('createPost', (user: User) => {
+    return user.roleId === Role.EDITOR
+  })
+  .define('viewPost', (user: User | null, post: Post) => {
+    if (!post.isPublished) {
+      return Bouncer.deny('This post is not yet published', 404)
+    }
+
+    return true
+  }, { allowGuest: true })
 
 /*
 |--------------------------------------------------------------------------
