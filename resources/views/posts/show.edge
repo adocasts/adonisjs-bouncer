@@ -6,11 +6,15 @@
     <p class="text-gray-400">By {{ post.user.username }}</p>
 
     <div class="flex justify-end items-center space-x-3">
-      <a href="{{ route('posts.edit', { id: post.id }) }}">Edit Post</a>
-      <form action="{{ route('posts.destroy', { id: post.id }, { qs: { _method: 'DELETE' }}) }}" method="POST">
-        {{ csrfField() }}
-        <button type="submit" class="text-red-400 hover:text-red-600">Delete Post</a>
-      </form>
+      @can('editPost', post)
+        <a href="{{ route('posts.edit', { id: post.id }) }}">Edit Post</a>
+      @endcan
+      @can('destroyPost', post)
+        <form action="{{ route('posts.destroy', { id: post.id }, { qs: { _method: 'DELETE' }}) }}" method="POST">
+          {{ csrfField() }}
+          <button type="submit" class="text-red-400 hover:text-red-600">Delete Post</a>
+        </form>
+      @endcan
     </div>
   </div>
 
@@ -23,37 +27,45 @@
   <div class="mt-3 pt-3 border-t border-gray-300">
     <h3 class="text-lg font-semibold">Comments</h3>
 
-    <form action="{{ route('posts.comments.store', { post_id: post.id }) }}" method="POST" class="mb-3">
-      {{ csrfField() }}
+    @can('createComment', post)
+      <form action="{{ route('posts.comments.store', { post_id: post.id }) }}" method="POST" class="mb-3">
+        {{ csrfField() }}
 
-      @!input({
-        type: 'textarea',
-        name: 'body',
-        value: flashMessages.get('body'),
-        errors: flashMessages.get('errors.body')
-      })
+        @!input({
+          type: 'textarea',
+          name: 'body',
+          value: flashMessages.get('body'),
+          errors: flashMessages.get('errors.body')
+        })
 
-      <div class="-mt-2 text-right">
-        <button type="submit">Comment</button>
-      </div>
-    </form>
+        <div class="-mt-2 text-right">
+          <button type="submit">Comment</button>
+        </div>
+      </form>
+    @endcan
 
     @each (comment in post.comments)
       <div class="mb-3">
         <p>{{ comment.body }}</p>
         <div class="flex items-center space-x-3 text-xs ">
           <p class="text-gray-400">By {{ comment.user.username }}</p>
-          <form action="{{ route('posts.comments.destroy', { id: comment.id }, { qs: { _method: 'DELETE' } }) }}" method="POST">
-            {{ csrfField() }}
-            <button type="submit" class="text-red-400 hover:text-red-600">Delete Comment</button>
-          </form>
+          @can('destroyComment', comment)
+            <form action="{{ route('posts.comments.destroy', { id: comment.id }, { qs: { _method: 'DELETE' } }) }}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="text-red-400 hover:text-red-600">Delete Comment</button>
+            </form>
+          @endcan
         </div>
       </div>
     @endeach
 
-    @if (!post.comments.length)
-      <p class="text-gray-400">No comments, be the first to comment!</p>
-    @endif
+    @cannot('viewCommentList', post)
+      <p class="text-gray-600">Comments for this post are turned off</p>
+    @else
+      @if (!post?.comments?.length)
+        <p class="text-gray-400">No comments, be the first to comment!</p>
+      @endif
+    @endcannot
   </div>
 
 @endsection

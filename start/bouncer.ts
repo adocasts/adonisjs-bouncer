@@ -10,6 +10,7 @@ import User from "App/Models/User";
 import Role from "Contracts/enums/Role";
 import Post from "App/Models/Post";
 import Logger from "@ioc:Adonis/Core/Logger"
+import Comment from "App/Models/Comment";
 
 /*
 |--------------------------------------------------------------------------
@@ -47,16 +48,46 @@ export const { actions } = Bouncer
       ? Logger.info(`${userType} was authorized to ${actionName}`)
       : Logger.info(`${userType} was denied to ${actionName} for ${actionResult.errorResponse}`)
   })
+
+  /* POST
+  /***************************************/
   .define('createPost', (user: User) => {
     return user.roleId === Role.EDITOR
   })
   .define('viewPost', (user: User | null, post: Post) => {
+    if (post.userId === user?.id) {
+      return true
+    }
+
     if (!post.isPublished) {
       return Bouncer.deny('This post is not yet published', 404)
     }
 
     return true
   }, { allowGuest: true })
+  .define('editPost', (user: User, post: Post) => {
+    return post.userId === user.id
+  })
+  .define('destroyPost', (user: User, post: Post) => {
+    return post.userId === user.id
+  })
+
+  /* COMMENT
+  /***************************************/
+  .define('viewCommentList', (user: User | null, post: Post) => {
+    return post.isPublished
+  }, { allowGuest: true })
+  .define('createComment', (user: User, post: Post) => {
+    return post.isPublished
+  })
+  .define('editComment', (user: User, comment: Comment) => {
+    return comment.userId === user.id
+  })
+  .define('destroyComment', (user: User, comment: Comment) => {
+    const allowedRoles = [Role.MODERATOR, Role.EDITOR, Role.ADMIN]
+
+    return comment.userId === user.id || allowedRoles.includes(user.roleId)
+  })
 
 /*
 |--------------------------------------------------------------------------

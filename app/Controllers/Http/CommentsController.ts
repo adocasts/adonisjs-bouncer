@@ -1,10 +1,15 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Comment from "App/Models/Comment";
 import CommentValidator from "App/Validators/CommentValidator";
+import Post from "App/Models/Post";
 
 
 export default class CommentsController {
-  public async store({ request, response, auth, params }: HttpContextContract) {
+  public async store({ request, response, auth, params, bouncer }: HttpContextContract) {
+    const post = await Post.findOrFail(params.post_id)
+
+    await bouncer.authorize('createComment', post)
+
     const data = await request.validate(CommentValidator)
 
     await Comment.create({
@@ -16,8 +21,11 @@ export default class CommentsController {
     return response.redirect().toRoute('posts.show', { id: params.post_id })
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  public async update({ request, response, params, bouncer }: HttpContextContract) {
     const comment = await Comment.findOrFail(params.id)
+
+    await bouncer.authorize('editComment', comment)
+
     const data = await request.validate(CommentValidator)
 
     await comment.merge(data).save()
@@ -25,8 +33,10 @@ export default class CommentsController {
     return response.redirect().toRoute('posts.show', { id: comment.postId })
   }
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
     const comment = await Comment.findOrFail(params.id)
+
+    await bouncer.authorize('destroyComment', comment)
 
     await comment.delete()
 

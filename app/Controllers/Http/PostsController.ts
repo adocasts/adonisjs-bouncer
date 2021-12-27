@@ -30,23 +30,32 @@ export default class PostsController {
 
   public async show({ view, params, bouncer }: HttpContextContract) {
     const post = await Post.query()
-      .preload('comments', query => query.preload('user'))
       .preload('user')
       .where('id', params.id)
       .firstOrFail()
+
+    if (await bouncer.allows('viewCommentList', post)) {
+      await post.load('comments', query => query.preload('user'))
+    }
 
     await bouncer.authorize('viewPost', post)
 
     return view.render('posts/show', { post })
   }
 
-  public async edit({ view, params }: HttpContextContract) {
+  public async edit({ view, params, bouncer }: HttpContextContract) {
     const post = await Post.findOrFail(params.id)
+
+    await bouncer.authorize('editPost', post)
+
     return view.render('posts/createOrEdit', { post })
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  public async update({ request, response, params, bouncer }: HttpContextContract) {
     const post = await Post.findOrFail(params.id)
+
+    await bouncer.authorize('editPost', post)
+
     const data = await request.validate(PostValidator)
 
     await post.merge(data).save()
@@ -54,8 +63,10 @@ export default class PostsController {
     return response.redirect().toRoute('posts.show', { id: post.id })
   }
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
     const post = await Post.findOrFail(params.id)
+
+    await bouncer.authorize('destroyPost', post)
 
     await post.related('comments').query().delete()
     await post.delete()
