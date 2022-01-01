@@ -8,7 +8,7 @@ export default class CommentsController {
   public async store({ request, response, auth, params, bouncer }: HttpContextContract) {
     const post = await Post.findOrFail(params.post_id)
 
-    await bouncer.authorize('createComment', post)
+    await bouncer.with('CommentPolicy').authorize('create', post)
 
     const data = await request.validate(CommentValidator)
 
@@ -24,7 +24,7 @@ export default class CommentsController {
   public async update({ request, response, params, bouncer }: HttpContextContract) {
     const comment = await Comment.findOrFail(params.id)
 
-    await bouncer.authorize('editComment', comment)
+    await bouncer.with('CommentPolicy').authorize('update', comment)
 
     const data = await request.validate(CommentValidator)
 
@@ -36,7 +36,7 @@ export default class CommentsController {
   public async destroy({ response, params, bouncer }: HttpContextContract) {
     const comment = await Comment.findOrFail(params.id)
 
-    await bouncer.authorize('destroyComment', comment)
+    await bouncer.with('CommentPolicy').authorize('delete', comment)
 
     await comment.delete()
 

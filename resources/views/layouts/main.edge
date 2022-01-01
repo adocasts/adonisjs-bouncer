@@ -12,7 +12,7 @@
   <div class="flex items-center justify-center bg-gray-50 py-3 border-b border-gray-100 space-x-3">
     <a href="{{ route('home') }}">Home</a>
 
-    @can('createPost')
+    @can('PostPolicy.create')
       <a href="{{ route('posts.create') }}">New Post</a>
     @endcan
 
